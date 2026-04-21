@@ -6,7 +6,7 @@ public class ModEntry
 {
     public static void Initialize()
     {
-        var harmony = new Harmony("soundedsquash.togglecontroller");
+        var harmony = new Harmony("soundedsquash.controllerdetection");
         harmony.PatchAll();
     }
 }
