@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using ControllerDetection.SoftDependencies;
+using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
 
 [ModInitializer("Initialize")]
@@ -8,5 +9,7 @@ public class ModEntry
     {
         var harmony = new Harmony("soundedsquash.controllerdetection");
         harmony.PatchAll();
+
+        ModConfigBridge.DeferredRegister();
     }
 }

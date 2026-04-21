@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using ControllerDetection.SoftDependencies;
+using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 
@@ -10,13 +11,14 @@ public static class NControllerManagerPatch
     private static SceneTreeTimer? _blockTimer;
     private static bool _hasTriggeredOnce;
 
-    private const float InitialSettleDelay = 1.1f;
+    public static float InitialSettleDelay = ModConfigBridge.GetValue("delay", 1.1f);
     
     [HarmonyPatch("CheckForMouseInput")]
     [HarmonyPrefix]
     static bool CheckForMouseInputPrefix(ref InputEvent inputEvent)
     {
-        if (_blockTimer != null && _blockTimer.TimeLeft > 0)
+        // Block mouse check if timer is running
+        if (_blockTimer?.TimeLeft > 0)
         {
             return false; 
         }
@@ -26,8 +28,9 @@ public static class NControllerManagerPatch
     
     [HarmonyPatch("ControlModeChanged")]
     [HarmonyPostfix]
-    static void EmitSignalControllerDetectedPostfix(NControllerManager __instance)
+    static void ControlModeChangedPostfix(NControllerManager __instance)
     {
+        // Start timer on input change
         _hasTriggeredOnce = false;
         TriggerInitialSettle(__instance);
     }
